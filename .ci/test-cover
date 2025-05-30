@@ -19,37 +19,40 @@ DESTDIR="${PWD}/target/cover"
 rustup component add llvm-tools
 cargo install grcov "cargo-pgrx@${PGRXVERSION}"
 
-export RUSTFLAGS="-Cinstrument-coverage"
+export RUSTFLAGS="-C instrument-coverage"
 if [ "$(uname -o)" = "Darwin" ]; then
     export RUSTFLAGS="-Clink-arg=-Wl,-undefined,dynamic_lookup $RUSTFLAGS"
 fi
 
 coverargs=()
+prof_dirs=("${DESTDIR}")
 if [ -n "${PGUSER}" ]; then
     coverargs+=(--runas "$PGUSER")
 fi
 if [ -n "${PGDATA}" ]; then
     coverargs+=(--pgdata "$PGDATA")
+    if [ -n "${PGUSER}" ]; then
+        # The pg_test tests will be run here, and LLVM_PROFILE_FILE won't be
+        # propagated, so be sure to tell grcov to look for files here.
+        prof_dirs+=("${PGDATA}/${PGVERSION}")
+    fi
 fi
 
 export LLVM_PROFILE_FILE="${DESTDIR}/default_%m_%p.profraw"
 cargo pgrx test "${coverargs[@]}" "pg${PGVERSION}"
 
-grcov "${DESTDIR}" \
-    --ignore '**/clang-sys*/**' \
-    --ignore '**/pgrx-pg-sys*/**' \
-    --ignore "$HOME/.cargo/**" \
+grcov "${prof_dirs[@]}" \
+    --keep-only src/lib.rs \
     --ignore-not-existing \
-    --excl-start 'begin_impossible!' \
-    --excl-stop 'end_impossible!' \
+    --excl-line 'unreachable!' \
     --llvm \
     --binary-path "target/debug/" \
     -s . \
     --branch \
     -o "${DESTDIR}" \
-    --output-types html,cobertura
+    --output-types html,cobertura,markdown
 
-xmllint --xpath "concat('Coverage: ', 100 * string(//coverage/@line-rate), '%')" "${DESTDIR}/cobertura.xml"
+cat "${DESTDIR}/markdown.md"
 
 if [ "$(uname -o)" = "Darwin" ] && [ -z "$CI" ]; then
 	open "${DESTDIR}/html/index.html"

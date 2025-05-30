@@ -21,6 +21,8 @@ All notable changes to this project will be documented in this file. It uses the
     installed elsewhere in `dynamic_library_path` Postgres will be able to
     find it.
 *   Moved from the `tembo-io` org to `theory` on GitHub.
+*   Reduced memory overhead of some error values, as suggested by the Rust
+    1.87.0 linter.
 
   [v0.1.7]: https://github.com/theory/pg-jsonschema-boon/compare/v0.1.6...v0.1.7
 

@@ -233,7 +233,7 @@ extern "C-unwind" fn _PG_init() {
 /// `schemas`. Each schema in `schemas` is named for its `$id` field or, if it
 /// has none, `id` is used for the first schema, and `"{id}{i}"` for
 /// subsequent schemas.
-fn new_compiler(id: &str, schemas: &[Value]) -> Result<Compiler, CompileError> {
+fn new_compiler(id: &str, schemas: &[Value]) -> Result<Compiler, Box<CompileError>> {
     let mut compiler = Compiler::new();
     compiler.set_default_draft(GUC.get().into());
     // Use an empty loader to prevent boon from accessing the file system.
@@ -258,7 +258,7 @@ fn new_compiler(id: &str, schemas: &[Value]) -> Result<Compiler, CompileError> {
 
 /// compiles compiles the schema named `id` in `schemas`, returning `Ok(())`
 /// on success and an error on failure.
-fn compiles(id: &str, schemas: &[Value]) -> Result<(), CompileError> {
+fn compiles(id: &str, schemas: &[Value]) -> Result<(), Box<CompileError>> {
     let mut c = new_compiler(id, schemas)?;
     let mut schemas = Schemas::new();
     c.compile(id, &mut schemas)?;
@@ -274,13 +274,13 @@ macro_rules! info {
 }
 
 /// validate validates `instance` against schema `id` in `schemas`.
-fn validate(id: &str, schemas: &[Value], instance: Value) -> Result<bool, CompileError> {
+fn validate(id: &str, schemas: &[Value], instance: Value) -> Result<bool, Box<CompileError>> {
     match new_compiler(id, schemas) {
         Err(e) => Err(e),
         Ok(mut c) => {
             let mut schemas = Schemas::new();
             match c.compile(id, &mut schemas) {
-                Err(e) => Err(e),
+                Err(e) => Err(Box::new(e)),
                 Ok(index) => {
                     if let Err(e) = schemas.validate(&instance, index) {
                         info!("{e}");
