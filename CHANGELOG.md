@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file. It uses the
 
 ## [v0.1.7] — Unreleased
 
-### ⬆️ Dependency Updates
+### ⬆️ Dependency 2025-05-30
 
 *   Upgraded pgrx to v0.14.3
 *   Upgraded all other dependencies
