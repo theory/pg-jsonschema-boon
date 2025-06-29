@@ -58,7 +58,7 @@ macro_rules! values_for {
 // jsonschema_is_valid(id::text, VARIADIC schema::jsonb)
 
 /// json_schema_is_valid validates `schema`.
-#[pg_extern(immutable, strict, parallel_safe, name = "jsonschema_is_valid")]
+#[pg_extern(immutable, strict, parallel_safe, name = r#"jsonschema_is_valid"#)]
 fn json_schema_is_valid(schema: Json) -> bool {
     let schemas = [schema.0];
     run_compiles!(id_for!(&schemas[0]), &schemas)
@@ -178,15 +178,15 @@ fn jsonb_matches_schema(schema: Json, instance: JsonB) -> bool {
 #[non_exhaustive]
 #[derive(PostgresGucEnum, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum Draft {
-    /// Draft for `http://json-schema.org/draft-04/schema`
+    // Draft for `http://json-schema.org/draft-04/schema`
     V4,
-    /// Draft for `http://json-schema.org/draft-06/schema`
+    // Draft for `http://json-schema.org/draft-06/schema`
     V6,
-    /// Draft for `http://json-schema.org/draft-07/schema`
+    // Draft for `http://json-schema.org/draft-07/schema`
     V7,
-    /// Draft for `https://json-schema.org/draft/2019-09/schema`
+    // Draft for `https://json-schema.org/draft/2019-09/schema`
     V2019,
-    /// Draft for `https://json-schema.org/draft/2020-12/schema`
+    // Draft for `https://json-schema.org/draft/2020-12/schema`
     V2020,
 }
 
@@ -204,17 +204,32 @@ impl Into<boon::Draft> for Draft {
     }
 }
 
-// GUC fetches the jsonschema.default_draft GUC value.
+/// GUC fetches the jsonschema.default_draft GUC value.
+#[cfg(not(test))]
 static GUC: pgrx::GucSetting<Draft> = pgrx::GucSetting::<Draft>::new(Draft::V2020);
+
+// For testing purposes, define a separate global `GUC` variable that doesn't
+// hit the thread safety issues of [`pgrx::GucSetting`] while testing.q
+#[cfg(test)]
+static GUC: Draft = Draft::V2020;
+
+#[cfg(test)]
+impl Draft {
+    fn get(&self) -> Self {
+        *self
+    }
+}
 
 // initialize the jsonschema.default_draft GUC.
 fn init_guc() {
     // Register the GUC jsonschema.default_draft, with values defined by the
-    // Draft enum.
+    // Draft enum. Only called by [`_PG_init`], but limit to non-testing to keep
+    // the compiler happy.
+    #[cfg(not(test))]
     pgrx::GucRegistry::define_enum_guc(
-        "jsonschema.default_draft",
-        "Default JSON Schema draft",
-        r#"JSON Schema draft to use for schemas that don't define the draft in their "$schema" property."#,
+        c"jsonschema.default_draft",
+        c"Default JSON Schema draft",
+        cr#"JSON Schema draft to use for schemas that don't define the draft in their "$schema" property."#,
         &GUC,
         pgrx::GucContext::Userset,
         pgrx::GucFlags::default(),

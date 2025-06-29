@@ -7,9 +7,18 @@ All notable changes to this project will be documented in this file. It uses the
   [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
     "Semantic Versioning 2.0.0"
 
-## [v0.1.7] — Unreleased
+## [v0.1.8] — Unreleased
 
-### ⬆️ Dependency 2025-05-30
+### ⬆️ Dependency Updates
+
+*   Upgraded pgrx to v0.14.3
+*   Upgraded all other dependencies
+
+  [v0.1.8]: https://github.com/theory/pg-jsonschema-boon/compare/v0.1.7...v0.1.8
+
+## [v0.1.7] — 2025-05-30
+
+### ⬆️ Dependency Updates
 
 *   Upgraded pgrx to v0.14.3
 *   Upgraded all other dependencies

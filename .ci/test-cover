@@ -12,8 +12,6 @@ fi
 
 PGVERSION=${1:-}
 PGRXVERSION=${2:-}
-
-# Must be absolute to get all the data files from Postgres, too.
 DESTDIR="${PWD}/target/cover"
 
 rustup component add llvm-tools
@@ -28,17 +26,24 @@ coverargs=()
 prof_dirs=("${DESTDIR}")
 if [ -n "${PGUSER}" ]; then
     coverargs+=(--runas "$PGUSER")
+    if [ -z "${PGDATA}" ]; then
+        echo "Use of PGUSER requires that PGDATA also be set"
+        exit 1
+    fi
+    # --runas propagates LLVM_PROFILE_FILE, but then the process writes no
+    # profiles at all. So don't set it and it will write profiles to PWD for the
+    # current user and to PGDATA for the PGUSER user.
+    prof_dirs=("$PWD" "${PGDATA}/${PGVERSION}")
+    # Create DESTDIR so that grcov can write to it below.
+    mkdir -p "${DESTDIR}"
+else
+    # Running as current user; put profiles into DESTDIR.
+    export LLVM_PROFILE_FILE="${DESTDIR}/default_%m_%p.profraw"
 fi
 if [ -n "${PGDATA}" ]; then
     coverargs+=(--pgdata "$PGDATA")
-    if [ -n "${PGUSER}" ]; then
-        # The pg_test tests will be run here, and LLVM_PROFILE_FILE won't be
-        # propagated, so be sure to tell grcov to look for files here.
-        prof_dirs+=("${PGDATA}/${PGVERSION}")
-    fi
 fi
 
-export LLVM_PROFILE_FILE="${DESTDIR}/default_%m_%p.profraw"
 cargo pgrx test "${coverargs[@]}" "pg${PGVERSION}"
 
 grcov "${prof_dirs[@]}" \
@@ -55,5 +60,5 @@ grcov "${prof_dirs[@]}" \
 cat "${DESTDIR}/markdown.md"
 
 if [ "$(uname -o)" = "Darwin" ] && [ -z "$CI" ]; then
-	open "${DESTDIR}/html/index.html"
+    open "${DESTDIR}/html/index.html"
 fi

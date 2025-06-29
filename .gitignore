@@ -4,6 +4,8 @@
 *.iml
 **/*.rs.bk
 .vscode/
+.zed/
+cspell.json
 META.json
 /jsonschema-*
 vendor/
