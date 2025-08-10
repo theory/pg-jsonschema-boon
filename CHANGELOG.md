@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file. It uses the
 
 ### ⬆️ Dependency Updates
 
-*   Upgraded pgrx to v0.14.3
+*   Upgraded pgrx to v0.16.0 to support PostgreSQL 18
 *   Upgraded all other dependencies
 
   [v0.1.8]: https://github.com/theory/pg-jsonschema-boon/compare/v0.1.7...v0.1.8
