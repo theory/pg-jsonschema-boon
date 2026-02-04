@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file. It uses the
   [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
     "Semantic Versioning 2.0.0"
 
+## [v0.1.9] — Unreleased
+
+### ⬆️ Dependency Updates
+
+*   Upgraded dependencies, notably the bytes package (CVE-2026-25541).
+
 ## [v0.1.8] — 2025-09-26
 
 ### ⬆️ Dependency Updates
