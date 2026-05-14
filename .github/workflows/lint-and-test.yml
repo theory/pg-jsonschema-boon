@@ -10,11 +10,11 @@ jobs:
     container: pgxn/pgxn-tools
     strategy:
       matrix:
-        pg: [13, 14, 15, 16, 17, 18]
+        pg: [14, 15, 16, 17, 18]
     name: 🐘 Postgres ${{ matrix.pg }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Start PostgreSQL ${{ matrix.pg }}
         run: pg-start ${{ matrix.pg }}
       - name: Setup Rust
@@ -27,10 +27,10 @@ jobs:
     name: ✅ Lint and Cover
     runs-on: ubuntu-latest
     container: pgxn/pgxn-tools
-    env: { PGVERSION: 16 }
+    env: { PGVERSION: 18 }
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Start PostgreSQL ${{ env.PGVERSION }}
         run: pg-start ${{ env.PGVERSION }}
       - name: Setup Rust

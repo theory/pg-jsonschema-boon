@@ -31,9 +31,9 @@ if [ -n "${PGUSER}" ]; then
         exit 1
     fi
     # --runas propagates LLVM_PROFILE_FILE, but then the process writes no
-    # profiles at all. So don't set it and it will write profiles to PWD for the
-    # current user and to PGDATA for the PGUSER user.
-    prof_dirs=("$PWD" "${PGDATA}/${PGVERSION}")
+    # profiles at all. So don't set it and it will write profiles to PWD for
+    # the current user and to PGDATA for the PGUSER user.
+    prof_dirs=("$PWD" "${PGDATA}")
     # Create DESTDIR so that grcov can write to it below.
     mkdir -p "${DESTDIR}"
 else

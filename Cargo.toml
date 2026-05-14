@@ -1,6 +1,6 @@
 [package]
 name = "jsonschema"
-version = "0.1.8"
+version = "0.1.9"
 description = "JSON Schema validation in Postgres"
 readme = "README.md"
 repository = "https://github.com/theory/pg-jsonschema-boon"
@@ -12,7 +12,7 @@ edition = "2021"
 exclude = [ ".github", ".gitattributes", "target", ".ci", ".vscode", ".gitignore", "META.json.in" ]
 
 [lib]
-crate-type = ["cdylib", "lib"]
+crate-type = ["cdylib"]
 
 [features]
 default = ["pg17"]
@@ -25,12 +25,12 @@ pg18 = ["pgrx/pg18", "pgrx-tests/pg18" ]
 pg_test = []
 
 [dependencies]
-pgrx = "0.16.1"
+pgrx = "=0.18.0"
 boon = "0.6.1"
 serde_json = "1.0.149"
 
 [dev-dependencies]
-pgrx-tests = "0.16.1"
+pgrx-tests = "=0.18.0"
 
 [profile.dev]
 panic = "unwind"
