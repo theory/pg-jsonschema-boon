@@ -14,7 +14,7 @@ jobs:
       PGXN_PASSWORD: ${{ secrets.PGXN_PASSWORD }}
     steps:
     - name: Check out the repo
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Bundle the Release
       id: bundle
       env: { GIT_BUNDLE_OPTS: --add-file META.json }
@@ -25,7 +25,7 @@ jobs:
       id: notes
       uses: theory/changelog-version-notes-action@v0
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         name: Release ${{ github.ref_name }}
         body_path: ${{ steps.notes.outputs.file }}

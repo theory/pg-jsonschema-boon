@@ -14,11 +14,11 @@ jobs:
     name: 🐘 Postgres ${{ matrix.pg }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Start PostgreSQL ${{ matrix.pg }}
         run: pg-start ${{ matrix.pg }}
       - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@v2
         with: { cache-key: "pg${{ matrix.pg }}" }
       - name: Test on PostgreSQL ${{ matrix.pg }}
         run: pgrx-build-test
@@ -30,11 +30,11 @@ jobs:
     env: { PGVERSION: 18 }
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Start PostgreSQL ${{ env.PGVERSION }}
         run: pg-start ${{ env.PGVERSION }}
       - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           cache-key: pg${{ env.PGVERSION }}
           components: rustfmt, clippy, llvm-tools
@@ -47,7 +47,7 @@ jobs:
       - name: Generate Coverage
         run: make cover RUST_BACKTRACE=1 PGUSER=postgres PGDATA=/var/lib/postgresql/pgrx
       - name: Publish Coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/cover/cobertura.xml
