@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file. It uses the
   [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
     "Semantic Versioning 2.0.0"
 
+## [v0.1.11] — 2026-10-21
+
+*   Upgraded pgrx to v0.19.3
+*   Added PostgreSQL 19 support
+*   Upgraded all other dependencies
+
+  [v0.1.11]: https://github.com/theory/pg-jsonschema-boon/compare/v0.1.10...v0.1.11
+
 ## [v0.1.10] — 2026-09-19
 
 ### ⬆️ Dependency Updates
@@ -14,7 +22,7 @@ All notable changes to this project will be documented in this file. It uses the
 *   Upgraded pgrx to v0.18.1.
 *   Upgraded dependencies, notably for a few CVEs.
 
-  [v0.1.9]: https://github.com/theory/pg-jsonschema-boon/compare/v0.1.8...v0.1.9
+  [v0.1.10]: https://github.com/theory/pg-jsonschema-boon/compare/v0.1.9...v0.1.10
 
 ## [v0.1.9] — 2026-05-14
 
